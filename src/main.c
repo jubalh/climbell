@@ -6,6 +6,11 @@
  */
 
 #include <glib.h>
+#include <glib/gstdio.h>
+#include <gmodule.h>
+#include <fcntl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #define VERSION "0.0"
 
@@ -35,6 +40,28 @@ int install_language_pack(const char *language_pack)
 	}
 
 	g_print("Installing %s...\n", language_pack);
+
+	gchar *ending;
+	ending = g_strstr_len(language_pack, -1, ".gls");
+
+	if (!ending) {
+		g_print("File %s is not a valid language pack\n", language_pack);
+		return 1;
+	}
+
+	*ending = '\0';
+
+	gchar *start = language_pack;
+	gchar *sep = g_strrstr(language_pack, "/");
+	if (sep) {
+		start = sep + 1;
+	}
+
+	gchar *lp = g_strdup(start);
+	*ending = '.';
+
+	g_print("Language Pack: %s\n", lp);
+
 	return 0;
 }
 
