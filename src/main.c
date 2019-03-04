@@ -27,9 +27,15 @@ void show_version()
         g_print("There is NO WARRANTY, to the extent permitted by law.\n");
 }
 
-void install_language_pack(const char *language_pack)
+int install_language_pack(const char *language_pack)
 {
+	if (g_access(language_pack, 0x04) < 0) {
+		g_print("File %s does not exist or not readable\n", language_pack);
+		return 1;
+	}
+
 	g_print("Installing %s...\n", language_pack);
+	return 0;
 }
 
 int main(int argc, char **argv)
@@ -59,6 +65,6 @@ int main(int argc, char **argv)
     {
 		show_version();
     } else if (language_pack != NULL) {
-		install_language_pack(language_pack);
+		return install_language_pack(language_pack);
 	}
 }
