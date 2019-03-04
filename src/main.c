@@ -10,12 +10,34 @@
 #define VERSION "0.0"
 
 static gboolean version = FALSE;
+static char *language_pack = NULL;
+
+void show_version()
+{
+#ifndef GIT_REV
+        g_print("climbell, version %s\n", VERSION);
+#else
+        g_print("climbell, version %s~%s\n", VERSION, GIT_REV);
+#endif
+
+        g_print("Copyright (C) 2019 Michael Vetter <jubalh@iodoru.org>.\n");
+        g_print("License GPLv3+: GNU GPL version 3 or later <https://www.gnu.org/licenses/gpl.html>\n");
+        g_print("\n");
+        g_print("This is free software; you are free to change and redistribute it.\n");
+        g_print("There is NO WARRANTY, to the extent permitted by law.\n");
+}
+
+void install_language_pack(const char *language_pack)
+{
+	g_print("Installing %s...\n", language_pack);
+}
 
 int main(int argc, char **argv)
 {
     static GOptionEntry entries[] =
     {
         { "version", 'v', 0, G_OPTION_ARG_NONE, &version, "Show version information", NULL },
+        { "install", 'i', 0, G_OPTION_ARG_STRING, &language_pack, "Install new Language pack (.gls)" },
         { NULL }
     };
 
@@ -35,16 +57,8 @@ int main(int argc, char **argv)
 
     if (version == TRUE)
     {
-#ifndef GIT_REV
-        g_print("climbell, version %s\n", VERSION);
-#else 
-        g_print("climbell, version %s~%s\n", VERSION, GIT_REV);
-#endif
-
-        g_print("Copyright (C) 2019 Michael Vetter <jubalh@iodoru.org>.\n");
-        g_print("License GPLv3+: GNU GPL version 3 or later <https://www.gnu.org/licenses/gpl.html>\n");
-        g_print("\n");
-        g_print("This is free software; you are free to change and redistribute it.\n");
-        g_print("There is NO WARRANTY, to the extent permitted by law.\n");
-    }
+		show_version();
+    } else if (language_pack != NULL) {
+		install_language_pack(language_pack);
+	}
 }
