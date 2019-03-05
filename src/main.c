@@ -51,7 +51,7 @@ int install_language_pack(const char *language_pack)
 
 	*ending = '\0';
 
-	gchar *start = language_pack;
+	gchar *start = (gchar*)language_pack;
 	gchar *sep = g_strrstr(language_pack, "/");
 	if (sep) {
 		start = sep + 1;
@@ -62,6 +62,26 @@ int install_language_pack(const char *language_pack)
 
 	g_print("Language Pack: %s\n", lp);
 
+	const gchar *datadir = g_get_user_data_dir();
+	if (!datadir) {
+		g_free(lp);
+		fprintf (stderr, "Unable to get data dir\n");
+		return 1;
+	}
+
+	gchar *lp_dir = g_strconcat(datadir, "/climbell", "/language_packs/", lp, NULL);
+	g_print("Directory: %s\n", lp_dir);
+
+	if (g_mkdir_with_parents(lp_dir, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH) < 0) {
+		fprintf (stderr, "Unable to create %s\n", lp_dir);
+		g_free(lp_dir);
+		g_free(lp);
+		return 1;
+	}
+
+	g_free(lp_dir);
+
+	g_free(lp);
 	return 0;
 }
 
