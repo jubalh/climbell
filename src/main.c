@@ -11,6 +11,7 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/unistd.h>
 
 #define VERSION "0.0"
 
@@ -34,7 +35,7 @@ void show_version()
 
 int install_language_pack(const char *language_pack)
 {
-	if (g_access(language_pack, 0x04) < 0) {
+	if (g_access(language_pack, R_OK) < 0) {
 		g_print("File %s does not exist or not readable\n", language_pack);
 		return 1;
 	}
@@ -78,6 +79,18 @@ int install_language_pack(const char *language_pack)
 		g_free(lp);
 		return 1;
 	}
+
+	// TODO: make sure unzip is available
+	gchar *zipcall = g_strconcat("unzip ", language_pack, " -d ", lp_dir, NULL);
+	int ret_zip = system(zipcall);
+	if (ret_zip != 0) {
+		fprintf (stderr, "Unable to unzip %s\n", language_pack);
+		g_free(zipcall);
+		g_free(lp_dir);
+		g_free(lp);
+		return 1;
+	}
+	g_free(zipcall);
 
 	g_free(lp_dir);
 
