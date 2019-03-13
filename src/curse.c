@@ -7,6 +7,7 @@
 
 #include <ncurses.h>
 #include <stdlib.h>
+#include <gmodule.h>
 
 static void cleanup(void)
 {
@@ -26,7 +27,7 @@ void init_curses()
 	refresh();
 }
 
-void show_create_course()
+void show_create_course(GList *lp_list)
 {
 	int base_lang_x, base_lang_y;
 
@@ -37,6 +38,8 @@ void show_create_course()
 	wprintw(win, "Base language:");
 	getyx(win, base_lang_y, base_lang_x);
 	wprintw(win, "\nTarget language:\n");
+	wmove(win, base_lang_y, base_lang_x + 1);
+	wprintw(win, "%s", (char*)lp_list->data);
 	wmove(win, base_lang_y, base_lang_x + 1);
 
 	refresh();

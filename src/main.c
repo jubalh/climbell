@@ -23,16 +23,16 @@ static char *language_pack = NULL;
 void show_version()
 {
 #ifndef GIT_REV
-        g_print("climbell, version %s\n", VERSION);
+	g_print("climbell, version %s\n", VERSION);
 #else
-        g_print("climbell, version %s~%s\n", VERSION, GIT_REV);
+	g_print("climbell, version %s~%s\n", VERSION, GIT_REV);
 #endif
 
-        g_print("Copyright (C) 2019 Michael Vetter <jubalh@iodoru.org>.\n");
-        g_print("License GPLv3+: GNU GPL version 3 or later <https://www.gnu.org/licenses/gpl.html>\n");
-        g_print("\n");
-        g_print("This is free software; you are free to change and redistribute it.\n");
-        g_print("There is NO WARRANTY, to the extent permitted by law.\n");
+	g_print("Copyright (C) 2019 Michael Vetter <jubalh@iodoru.org>.\n");
+	g_print("License GPLv3+: GNU GPL version 3 or later <https://www.gnu.org/licenses/gpl.html>\n");
+	g_print("\n");
+	g_print("This is free software; you are free to change and redistribute it.\n");
+	g_print("There is NO WARRANTY, to the extent permitted by law.\n");
 }
 
 int install_language_pack(const char *language_pack)
@@ -108,72 +108,72 @@ int install_language_pack(const char *language_pack)
 	return 0;
 }
 
-int create_language_list()
+GList* create_language_list()
 {
-	GList *language_list;
+	GList *language_list = NULL;
 	const gchar *datadir = g_get_user_data_dir();
 
 	if (!datadir) {
 		fprintf (stderr, "Unable to get data dir\n");
-		return 1;
+		return NULL;
 	}
 
 	gchar *lp_dir = g_strconcat(datadir, "/climbell/language_packs/", NULL);
 
-    GError *error = NULL;
+	GError *error = NULL;
 	GDir *dir = g_dir_open(lp_dir, 0, &error);
 	if (!dir) {
 		free(lp_dir);
-        g_print("%s\n", error->message);
-        g_error_free(error);
-        return 1;
+		g_print("%s\n", error->message);
+		g_error_free(error);
+		return NULL;
 	}
 
 	const gchar *tmp = g_dir_read_name(dir);
 	while (tmp) {
-		g_print("%s\n", tmp);
+		//g_print("%s\n", tmp);
+
+		language_list = g_list_append(language_list, (gchar*)tmp);
 		tmp = g_dir_read_name(dir);
 	}
 
 	free(lp_dir);
-	return 0;
+	return language_list;
 }
 
 int main(int argc, char **argv)
 {
-    static GOptionEntry entries[] =
-    {
-        { "version", 'v', 0, G_OPTION_ARG_NONE, &version, "Show version information", NULL },
-        { "install", 'i', 0, G_OPTION_ARG_STRING, &language_pack, "Install new Language pack (.gls)" },
-        { NULL }
-    };
+	static GOptionEntry entries[] =
+	{
+		{ "version", 'v', 0, G_OPTION_ARG_NONE, &version, "Show version information", NULL },
+		{ "install", 'i', 0, G_OPTION_ARG_STRING, &language_pack, "Install new Language pack (.gls)" },
+		{ NULL }
+	};
 
-    GError *error = NULL;
-    GOptionContext *context;
+	GError *error = NULL;
+	GOptionContext *context;
 
-    context = g_option_context_new(NULL);
-    g_option_context_add_main_entries(context, entries, NULL);
-    if (!g_option_context_parse(context, &argc, &argv, &error)) {
-        g_print("%s\n", error->message);
-        g_option_context_free(context);
-        g_error_free(error);
-        return 1;
-    }
+	context = g_option_context_new(NULL);
+	g_option_context_add_main_entries(context, entries, NULL);
+	if (!g_option_context_parse(context, &argc, &argv, &error)) {
+		g_print("%s\n", error->message);
+		g_option_context_free(context);
+		g_error_free(error);
+		return 1;
+	}
 
-    g_option_context_free(context);
+	g_option_context_free(context);
 
-    if (version == TRUE)
-    {
+	if (version == TRUE)
+	{
 		show_version();
 		return 0;
-    } else if (language_pack != NULL) {
+	} else if (language_pack != NULL) {
 		return install_language_pack(language_pack);
 	}
-	
-	create_language_list();
 
-	/*
+	GList *lp_list = create_language_list();
+
 	init_curses();
-	show_create_course();
-	*/
+	show_create_course(lp_list);
 }
