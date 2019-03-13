@@ -19,7 +19,6 @@
 
 static gboolean version = FALSE;
 static char *language_pack = NULL;
-static WINDOW *win;
 
 void show_version()
 {
@@ -140,5 +139,6 @@ int main(int argc, char **argv)
 		return install_language_pack(language_pack);
 	}
 
-	init_curses(win);
+	init_curses();
+	show_create_course();
 }

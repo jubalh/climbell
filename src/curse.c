@@ -13,7 +13,7 @@ static void cleanup(void)
 	endwin();
 }
 
-void init_curses(WINDOW *win)
+void init_curses()
 {
 	initscr();
 	clear();
@@ -21,10 +21,16 @@ void init_curses(WINDOW *win)
 	cbreak();
 	noecho();
 
+	keypad(stdscr, true);
+
+	refresh();
+}
+
+void show_create_course()
+{
 	int base_lang_x, base_lang_y;
 
-	keypad(stdscr, true);
-	win = newwin(20, 20, 0, 5);
+	WINDOW *win = newwin(20, 20, 0, 5);
 
 	wprintw(win, "climbell\n\n");
 	wprintw(win, "Create a Course\n");

@@ -5,4 +5,5 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-void init_curses(WINDOW *win);
+void init_curses();
+void show_create_course();
