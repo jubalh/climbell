@@ -41,7 +41,7 @@ add_definitions(${GLIB_CFLAGS_OTHER})
 
 add_executable (climbell ${SRC} ${Glib_LIBRARY})
 
-target_link_libraries (climbell glib-2.0)
+target_link_libraries (climbell glib-2.0 ncurses)
 
 install(TARGETS
 	climbell
