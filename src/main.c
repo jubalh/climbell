@@ -108,6 +108,37 @@ int install_language_pack(const char *language_pack)
 	return 0;
 }
 
+int create_language_list()
+{
+	GList *language_list;
+	const gchar *datadir = g_get_user_data_dir();
+
+	if (!datadir) {
+		fprintf (stderr, "Unable to get data dir\n");
+		return 1;
+	}
+
+	gchar *lp_dir = g_strconcat(datadir, "/climbell/language_packs/", NULL);
+
+    GError *error = NULL;
+	GDir *dir = g_dir_open(lp_dir, 0, &error);
+	if (!dir) {
+		free(lp_dir);
+        g_print("%s\n", error->message);
+        g_error_free(error);
+        return 1;
+	}
+
+	const gchar *tmp = g_dir_read_name(dir);
+	while (tmp) {
+		g_print("%s\n", tmp);
+		tmp = g_dir_read_name(dir);
+	}
+
+	free(lp_dir);
+	return 0;
+}
+
 int main(int argc, char **argv)
 {
     static GOptionEntry entries[] =
@@ -138,7 +169,11 @@ int main(int argc, char **argv)
     } else if (language_pack != NULL) {
 		return install_language_pack(language_pack);
 	}
+	
+	create_language_list();
 
+	/*
 	init_curses();
 	show_create_course();
+	*/
 }
