@@ -5,6 +5,7 @@ project (climbell)
 
 set (SRC
 	src/main.c
+	src/curse.c
 	)
 
 if (CMAKE_BUILD_TYPE STREQUAL "Debug")

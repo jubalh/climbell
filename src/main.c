@@ -13,6 +13,7 @@
 #include <sys/stat.h>
 #include <sys/unistd.h>
 #include <ncurses.h>
+#include "curse.h"
 
 #define VERSION "0.0"
 
@@ -108,29 +109,6 @@ int install_language_pack(const char *language_pack)
 	return 0;
 }
 
-static void cleanup(void)
-{
-	endwin();
-}
-
-void init_curses()
-{
-	initscr();
-	clear();
-	atexit(cleanup);
-	cbreak();
-	noecho();
-
-	keypad(stdscr, true);
-	win = newwin(20, 20, 0, 5);
-	wprintw(win, "Hello from climbell\n");
-
-	refresh();
-	wrefresh(win);
-
-	getch();
-}
-
 int main(int argc, char **argv)
 {
     static GOptionEntry entries[] =
@@ -162,5 +140,5 @@ int main(int argc, char **argv)
 		return install_language_pack(language_pack);
 	}
 
-	init_curses();
+	init_curses(win);
 }
