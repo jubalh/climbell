@@ -75,6 +75,14 @@ int install_language_pack(const char *language_pack)
 	gchar *lp_dir = g_strconcat(datadir, "/climbell", "/language_packs/", lp, NULL);
 	g_print("Directory: %s\n", lp_dir);
 
+	// when directory already exists, treat as LP already installed
+	if (g_access(lp_dir, R_OK) >= 0) {
+		fprintf(stderr, "Aborting: %s already installed\n", lp);
+		g_free(lp_dir);
+		g_free(lp);
+		return 1;
+	}
+
 	if (g_mkdir_with_parents(lp_dir, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH) < 0) {
 		fprintf (stderr, "Unable to create %s\n", lp_dir);
 		g_free(lp_dir);
