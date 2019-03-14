@@ -9,6 +9,11 @@
 #include <stdlib.h>
 #include <gmodule.h>
 
+static GList *orig_list;
+static GList *lp_list;
+static int base_lang_x, base_lang_y;
+static WINDOW *win;
+
 static void cleanup(void)
 {
 	endwin();
@@ -27,12 +32,17 @@ void init_curses()
 	refresh();
 }
 
-void show_create_course(GList *lp_list)
+void init_create_course(GList *lplist)
 {
-	int base_lang_x, base_lang_y;
+	orig_list= lplist;
+	lp_list = lplist;
 
-	WINDOW *win = newwin(20, 20, 0, 5);
+	win = newwin(20, 20, 0, 5);
+}
 
+void draw_create_course()
+{
+	wmove(win, 0, 0);
 	wprintw(win, "climbell\n\n");
 	wprintw(win, "Create a Course\n");
 	wprintw(win, "Base language:");
@@ -44,7 +54,14 @@ void show_create_course(GList *lp_list)
 
 	refresh();
 	wrefresh(win);
-
-	getch();
 }
 
+void handle_create_course(int key)
+{
+	if (key == KEY_UP) {
+		lp_list = g_list_next(lp_list);
+		if (lp_list == NULL) {
+			lp_list = orig_list;
+		}
+	}
+}
