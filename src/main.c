@@ -14,6 +14,7 @@
 #include <sys/unistd.h>
 #include <ncurses.h>
 #include "curse.h"
+#include "course_creation.h"
 
 #define VERSION "0.0"
 
@@ -133,12 +134,17 @@ GList* create_language_list()
 	while (tmp) {
 		//g_print("%s\n", tmp);
 
-		language_list = g_list_append(language_list, (gchar*)tmp);
+		language_list = g_list_append(language_list, strdup(tmp));
 		tmp = g_dir_read_name(dir);
 	}
 
 	free(lp_dir);
+	g_dir_close(dir);
 	return language_list;
+}
+
+void free_lp_items(gpointer data) {
+	free(data);
 }
 
 int main(int argc, char **argv)
@@ -192,5 +198,5 @@ int main(int argc, char **argv)
 		}
 	}
 
-	g_list_free_1(lp_list);
+	g_list_free_full(lp_list, (GDestroyNotify) free_lp_items);
 }

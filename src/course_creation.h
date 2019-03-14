@@ -5,4 +5,6 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-void init_curses();
+void init_create_course(GList *lplist);
+void draw_create_course();
+void handle_create_course(int key);
