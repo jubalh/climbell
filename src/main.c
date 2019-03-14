@@ -185,18 +185,22 @@ int main(int argc, char **argv)
 	int key = 0;
 	bool run = true;
 
-	init_create_course(lp_list);
-	while (run) {
-		draw_create_course();
-		handle_create_course(key);
+	int ret = init_create_course(lp_list);
+	if (ret == 0) {
+		while (run) {
+			draw_create_course();
 
-		key = getch();
+			key = getch();
+			handle_create_course(key);
 
-		if (key == 27) {
-			run = false;
-			break;
+			if (key == 27) {
+				mvprintw(1,1, "ESC");
+				run = false;
+				break;
+			}
 		}
 	}
 
 	g_list_free_full(lp_list, (GDestroyNotify) free_lp_items);
+	return ret;
 }
